@@ -15,13 +15,13 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.shim.ShimPluginRegistry
 import io.flutter.plugin.common.*
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
 import io.flutter.view.FlutterCallbackInformation
 import io.flutter.view.FlutterMain
 import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.ref.SoftReference
+
 
 class FlutterForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("dk.cachet.ForegroundServicePlugin") {
 
@@ -592,13 +592,13 @@ class FlutterForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentSe
       val newBuilder = NotificationCompat.Builder(myAppContext(), channelDefaultImportanceId)
 
       try {
-
         newBuilder
                 .setContentTitle("Foreground Service")
                 .setContentText("Running")
                 .setOngoing(true)
-                .setOnlyAlertOnce(false)
-                .setSmallIcon(getHardcodedIconResourceId())
+          .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_DEFERRED)
+          .setPriority(NotificationCompat.PRIORITY_MIN)
+          .setSmallIcon(getHardcodedIconResourceId())
 
         //the "normal" setPriority method will try to rebuild/renotify
         //which of course isn't going to end well since the builder hasn't been set yet
@@ -612,7 +612,7 @@ class FlutterForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentSe
           notificationManager.createNotificationChannel(NotificationChannel(
                   channelLowImportanceId,
                   channelLowImportanceName,
-                  AndroidNotifiationPriority.LOW.toImportanceOrPriorityInt()
+            NotificationManager.IMPORTANCE_MIN,
           ))
         }
 
