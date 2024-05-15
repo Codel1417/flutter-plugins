@@ -519,7 +519,7 @@ class FlutterForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentSe
     private var channelDefaultImportanceName = "Default Priority Notifications"
 
     private val channelLowImportanceId = "dk.cachet.foregroundserviceplugin.notification.prioritylow"
-    private var channelLowImportanceName = "Low Priority Notifications"
+    private var channelLowImportanceName = "Gear Connected"
 
     private fun getChannelIdForImportance(importanceEnum: AndroidNotifiationPriority): String =(
             when(importanceEnum){
@@ -602,25 +602,12 @@ class FlutterForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentSe
 
         //the "normal" setPriority method will try to rebuild/renotify
         //which of course isn't going to end well since the builder hasn't been set yet
-        setPriorityOrImportanceInternal(newBuilder,AndroidNotifiationPriority.DEFAULT)
+        setPriorityOrImportanceInternal(newBuilder,AndroidNotifiationPriority.LOW)
 
         //the channel needs to be created yourself starting with O
         //importance can only be downgraded, not upgraded
         //so create all three channels right off the bat
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-          //TODO: better way of making sure all channels are created?
-          notificationManager.createNotificationChannel(NotificationChannel(
-                  channelHighImportanceId,
-                  channelHighImportanceName,
-                  AndroidNotifiationPriority.HIGH.toImportanceOrPriorityInt()
-          ))
-
-          notificationManager.createNotificationChannel(NotificationChannel(
-                  channelDefaultImportanceId,
-                  channelDefaultImportanceName,
-                  AndroidNotifiationPriority.DEFAULT.toImportanceOrPriorityInt()
-          ))
 
           notificationManager.createNotificationChannel(NotificationChannel(
                   channelLowImportanceId,
