@@ -3,12 +3,14 @@ package dk.cachet.flutter_foreground_service
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.app.ServiceCompat
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -349,12 +351,17 @@ class FlutterForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentSe
 
       if (thisCanReceiveIntent(startServiceIntent)) {
         if(notificationHelper.hardcodedIconIsAvailable()) {
-          //starting with O, have to startForegroundService instead of just startService
-          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            myAppContext().startForegroundService(startServiceIntent)
-          } else {
-            myAppContext().startService(startServiceIntent)
-          }
+          ServiceCompat.startForeground(
+            /* service = */ this,
+            /* id = */ 100, // Cannot be 0
+            /* notification = */ notificationHelper.currentNotification,
+            /* foregroundServiceType = */
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+              ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE
+            } else {
+              0
+            },
+          )
         }else{
           logError(notificationHelper.hardCodedIconNotFoundErrorMessage)
         }
