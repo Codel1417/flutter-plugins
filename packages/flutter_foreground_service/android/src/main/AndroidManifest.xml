@@ -6,7 +6,7 @@
 
     <application>
         <service android:name=".FlutterForegroundServicePlugin" android:exported="false"
-                 android:foregroundServiceType="connectedDevice|dataSync|location|mediaPlayback|mediaProjection|phoneCall"/>
+                 android:foregroundServiceType="connectedDevice"/>
     </application>
 
 </manifest>
